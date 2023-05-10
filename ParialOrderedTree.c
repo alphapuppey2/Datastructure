@@ -10,7 +10,11 @@ typedef struct POT
 }pot;
 
 
+//functions
 void initRoot(pot *);
+void insert(pot *, int);
+void display(pot x);
+
 
 int main(void){
     
