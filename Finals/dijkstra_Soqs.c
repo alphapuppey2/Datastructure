@@ -82,6 +82,27 @@ void dijkstra(graph G , int n , int start ){
     graph distance;
     graph pred;
 
+    int visited[MAX];
+    int count, minDistance , nextNode;
+    int z,x;
+
+    // Weights
+    for (z = 0; z < n; z++)
+    {
+        for (x = 0; x < n; x++)
+        {
+            if(G[z][x] == 0){
+                costs[z][x] = infinity;
+            }
+            else{
+                costs[z][x] = G[z][x];
+            }
+        }
+        
+    }
+    
+
+
 
 
 }
