@@ -1,6 +1,8 @@
+//This is Adjacency Matrix
+
 #include <stdio.h>
 #define MAX 10
-#define INFINITY 999
+#define INF 999
 
 typedef int graph[MAX][MAX];
 
@@ -44,7 +46,7 @@ void displayMatrix(graph A, int size){
     for(x = 0; x < size ; x++){
         printf("%2d" , x);
         for(z = 0; z < size ; z++){
-            (A[x][z] == INFINITY) ? printf("%2c ", '-') : printf("%2d " , A[x][z]);
+            (A[x][z] == INF) ? printf("%2c ", '-') : printf("%2d " , A[x][z]);
         }
         printf("\n");
     }
@@ -57,7 +59,7 @@ void initGraph(graph A , int vertexSize){
         for (z = 0; z < vertexSize; z++)
         {
             /* code */
-            A[x][z] = INFINITY;
+            A[x][z] = INF;
         }
         
     }
@@ -65,7 +67,7 @@ void initGraph(graph A , int vertexSize){
 
 void setWeightEdges(graph A , int source ,int destination,int weight ,int vertexSize){
 
-    if(A[source][destination] == INFINITY){
+    if(A[source][destination] == INF){
         A[source][destination] = weight;
     }
     else{
