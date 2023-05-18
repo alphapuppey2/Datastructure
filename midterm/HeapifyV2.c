@@ -59,7 +59,7 @@ void createHeap(tree *A){
     
     int x;
 
-    int givenArray[] = {4,10,3,5,1};
+    int givenArray[] = {6,8,4,7,2,3,9,1,5};
     A->size = sizeof(givenArray) / sizeof(int);
 
     for (x = 0; x < A->size; x++)
@@ -71,13 +71,13 @@ void createHeap(tree *A){
 
 }
 void heapify(tree *A , int indx , int isMaxheap){
-    
+    int largest = indx ;
+    int l,r;
+
     if(A->size == 1){
         printf("Single element in a Heap");
     }
     else{
-        int largest ,l,r;
-        largest = indx;
         l = 2 * indx + 1; // left child of largest
         r = 2 * indx + 2; // right child of largest
 
@@ -85,7 +85,7 @@ void heapify(tree *A , int indx , int isMaxheap){
             if(l < A->size && A->treeArray[l] > A->treeArray[largest]){
                 largest = l;
             }
-            else if(r < A->size && A->treeArray[r] > A->treeArray[r]){
+            if(r < A->size && A->treeArray[r] > A->treeArray[largest]){
                 largest = r;
             }
         }
@@ -94,20 +94,18 @@ void heapify(tree *A , int indx , int isMaxheap){
             if(l < A->size && A->treeArray[l] < A->treeArray[largest]){
                 largest = l;
             }
-            else if(r < A->size && A->treeArray[r] < A->treeArray[r]){
+            if(r < A->size && A->treeArray[r] < A->treeArray[largest]){
                 largest = r;
             }
         }
-        if(largest != indx){
+    }
+    if(largest != indx){
             int temp = A->treeArray[indx];
             A->treeArray[indx] = A->treeArray[largest];
             A->treeArray[largest] = temp;
 
             heapify(A , largest , isMaxheap);
         }
-
-
-    }
 }
 void swap(int *a , int *b){ 
     int temp = *a;
