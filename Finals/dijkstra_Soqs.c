@@ -40,9 +40,9 @@ int main(void){
 
 
 
-    printf("HELLObefore");
+    
     dijkstra(matrix , cost ,distance, n,start);
-    printf("HELLO");
+    
     display( distance , n , start);
 
 
