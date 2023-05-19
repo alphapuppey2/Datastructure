@@ -59,7 +59,7 @@ void createHeap(tree *A){
     
     int x;
 
-    int givenArray[] = {6,8,4,7,2,3,9,1,5};
+    int givenArray[] = {6, 8, 4, 7, 2, 3, 9, 1, 5};
     A->size = sizeof(givenArray) / sizeof(int);
 
     for (x = 0; x < A->size; x++)
