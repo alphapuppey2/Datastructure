@@ -1,4 +1,5 @@
 #ifndef stacklib
+#include <stdio.h>
 #define stacklib
 #define MAX 5
 
@@ -6,71 +7,72 @@ typedef struct {
     char elem[MAX];
     int TopList;
 }STACK;
+typedef enum {F , T}Boolean;
 
-void InitStack(STACK *S);
-void Push(STACK *S ,char elem);
-void Pop(STACK *S);
-int Top(STACK S);
-void MakeNull(STACK *S);
-int isEmpty(STACK S); // either the TOP is -1 or MAX
-int isFull(STACK S); // either the TOP is -1 or MAX
-void Display(STACK S);
-void InsertBottom(STACK *S , char Data);
+void initialize(STACK *A);
+void display(STACK A);
+void push(STACK *A ,char elem);
+void pop(STACK *A);
+int top(STACK A);
+Boolean isEmpty(STACK A); // either the TOP is -1 or MAX
+Boolean isFull(STACK A); // either the TOP is -1 or MAX
 
-void Display(STACK S){ 
+
+void InsertBottom(STACK *A , char Data);
+
+void Display(STACK A){ 
     int x;
-    for(x = S.TopList;x < MAX ; x++ ){
-        printf("%c\n" , S.elem[x]);
+    for(x = A.TopList;x < MAX ; x++ ){
+        printf("%c\n" , A.elem[x]);
     }
 
 }
 
-void InsertBottom(STACK *original , char elem){
+void insertBottom(STACK *original , char elem){
 
     int Topndx;
     STACK templist;
 
-    InitStack(&templist); // para d mag error ang templist kay garbage pa before sa call ani
+    initialize(&templist); // para d mag error ang templist kay garbage pa before sa call ani
 
 
     // Loop to transfer All Existing in the Original List to a temp to insert elem to Last
-    for(Topndx = Top(*original); Topndx != MAX; Topndx = Top(*original)){
-        Push(&templist ,original->elem[Topndx]);
-        Pop(original);
+    for(Topndx = top(*original); Topndx != MAX; Topndx = top(*original)){
+        push(&templist ,original->elem[Topndx]);
+        pop(original);
     }
-    Push(original,elem);
+    push(original,elem);
 
-    for(Topndx = Top(templist); Topndx != MAX ; Topndx = Top(templist)){
-        Push(original ,templist.elem[Topndx]);
-        Pop(&templist);
+    for(Topndx = top(templist); Topndx != MAX ; Topndx = top(templist)){
+        push(original ,templist.elem[Topndx]);
+        pop(&templist);
     }
 }
 
-void InitStack(STACK *S){
-    S->TopList = MAX;
+void initialize(STACK *A){
+    A->TopList = MAX;
 }
-void Push(STACK *S ,char elem){
+void push(STACK *A ,char elem){
 
-    if(!isFull(*S)){
-        S->elem[--S->TopList] = elem;
+    if(!isFull(*A)){
+        A->elem[--A->TopList] = elem;
     }
 }
-void Pop(STACK *S){
-    if(!isEmpty(*S)){ // if there is nothing to delete
-        S->TopList++;
+void pop(STACK *A){
+    if(!isEmpty(*A)){ // if there is nothing to delete
+        A->TopList++;
     }
 }
-int Top(STACK S){
-    return S.TopList;
+int top(STACK A){
+    return A.TopList;
 }
-void MakeNull(STACK *S){
-    S->TopList = MAX;
+Boolean isEmpty(STACK A){
+    Boolean Ret = A.TopList == MAX ? T:F;
+    return Ret;
 }
-int isEmpty(STACK S){
-    return S.TopList == MAX ? 1 : 0;
-}
-int isFull(STACK S){
-    return S.TopList == -1 ? 1 : 0;
+Boolean isFull(STACK A){
+    Boolean Ret = A.TopList == -1 ? T:F;
+    return Ret;
 }
 
 

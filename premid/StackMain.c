@@ -1,6 +1,6 @@
 #include<stdio.h>
-// #include "Stack.h"
-#include "StackL.h"
+#include "Stack.h"
+// #include "StackL.h"
 
 
 
@@ -8,19 +8,19 @@ int main(void){
 
     STACK S;
 
-    InitStack(&S);
+    initialize(&S);
 
-    Push(&S ,'U');
-    Push(&S ,'S');
-    Push(&S ,'C');
+    push(&S ,'U');
+    push(&S ,'S');
+    push(&S ,'C');
 
-    Display(S);
+    display(S);
 
-    // Pop(&S);
+    // pop(&S);
     // printf("\n");
 
-    InsertBottom(&S , 'T');
-    Display(S);
+    insertBottom(&S , 'T');
+    display(S);
 
     return 0;
 }
