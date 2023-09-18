@@ -17,18 +17,15 @@ void insertBottom(STACK *original , char elem){
 
     initialize(&templist); // para d mag error ang templist kay garbage pa before sa call ani
 
+    push(&templist,elem);
 
     // Loop to transfer All Existing in the Original List to a temp to insert elem to Last
     for(Topndx = top(*original); Topndx != MAX; Topndx = top(*original)){
         push(&templist ,original->elem[Topndx]);
         pop(original);
     }
-    push(original,elem);
 
-    for(Topndx = top(templist); Topndx != MAX ; Topndx = top(templist)){
-        push(original ,templist.elem[Topndx]);
-        pop(&templist);
-    }
+    *original = templist;
 }
 
 void initialize(STACK *A){
