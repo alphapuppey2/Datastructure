@@ -85,13 +85,13 @@ void dequeue(Queue *Q){
     if(Q->front != NULL){
         temp = Q->front;
 
-        Q->front = ( Q->front == Q->rear) ? Q->rear = NULL :  Q->front->next;
+        Q->front = ( Q->front == Q->rear) ? Q->rear = NULL :  temp->next;
 
         // if(Q->front == Q->rear){
         //     Q->rear = Q->front = NULL;
         // }
         // else{
-        //     Q->front = Q->front->next;
+        //     Q->front = temp->next;
         // }
         free(temp);
     }
