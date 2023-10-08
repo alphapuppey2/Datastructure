@@ -70,3 +70,6 @@ SET Intersection(SET A , SET B){
 SET Difference(SET A, SET B){
     return A & ~B;
 }
+int isMember(SET A , int pos){
+    
+}
