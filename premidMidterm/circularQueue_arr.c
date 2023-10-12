@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define max 10
+#define max 11
 
 typedef struct {
     char data[max];
@@ -11,6 +11,7 @@ typedef struct {
 
 void initialize(circular *arr);
 void enqueue(circular *arr , char data);
+void dequeue(circular *arr);
 int isEmpty(circular arr);
 int isFull(circular arr);
 void display(circular arr);
@@ -24,6 +25,17 @@ int main(void){
     enqueue(&arr , 'A');
     enqueue(&arr , 'B');
     enqueue(&arr , 'C');
+    enqueue(&arr , 'D');
+    enqueue(&arr , 'E');
+    enqueue(&arr , 'F');
+    enqueue(&arr , 'G');
+    enqueue(&arr , 'H');
+    enqueue(&arr , 'I');
+    enqueue(&arr , 'J');
+
+    display(arr);
+
+    dequeue(&arr);
 
     display(arr);
 
@@ -42,8 +54,14 @@ void enqueue(circular *arr , char data){
         arr->data[arr->rear] = data;
     }
 }
-int isEmpty(circular arr){
+void dequeue(circular *arr){
+    if(!isEmpty(*arr)){
+        arr->front = (arr->front + 1) % max;
+    }
 
+}
+int isEmpty(circular arr){
+             
     return ((arr.rear + 1)% max == arr.front) ? 1: 0;
 
 }
@@ -60,5 +78,6 @@ void display(circular arr){
         printf("%c->" , arr.data[count]);
         
     }
+        printf("\n");
 
 }
