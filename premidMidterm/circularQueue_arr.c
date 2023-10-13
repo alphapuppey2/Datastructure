@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define max 11
+#define max 10
 
 typedef struct {
     char data[max];
@@ -31,6 +31,7 @@ int main(void){
     enqueue(&arr , 'G');
     enqueue(&arr , 'H');
     enqueue(&arr , 'I');
+    // no insert will happen because its full
     enqueue(&arr , 'J');
 
     display(arr);

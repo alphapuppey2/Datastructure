@@ -21,7 +21,9 @@ void DeallocSpace(VirtualHeap *V , int dx);
 void display(VirtualHeap V);
 void insertFirst(List *head , VirtualHeap *V ,char Data);
 void displayList(VirtualHeap V, List head );
+
 void deleteFirst(List *head , VirtualHeap *V);
+void deleteSpecific(List * head , VirtualHeap* V , int elem);
 
 
 
@@ -57,8 +59,9 @@ void deleteFirst(List *head , VirtualHeap *V){
     *head = V->Box[*head].link;
 
     DeallocSpace(V , temp);
-
 }
+void deleteSpecific(List * head , VirtualHeap* V , int elem){}
+
 void insertFirst(List *head , VirtualHeap *V ,char Data){
 
     int newnode = AllocSpace(V);

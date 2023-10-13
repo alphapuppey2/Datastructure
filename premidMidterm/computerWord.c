@@ -48,7 +48,7 @@ void displayBits(SET res){
 
     char bitSize = sizeof(char) * 8;
     int mask, pos;
-
+    //                  1000 0000                    0100 0000
     for(pos = 1, mask = 1 << bitSize - 1; mask != 0 ; mask = mask >> 1 , pos++){
         printf("%d" , (res & mask) != 0);
         if(pos == 4){
@@ -65,10 +65,14 @@ SET Union(SET A ,SET B){
 
 }
 SET Intersection(SET A , SET B){
+    
     return A & B;
+
 }
 SET Difference(SET A, SET B){
+
     return A & ~B;
+
 }
 int isMember(SET A , int pos){
     
