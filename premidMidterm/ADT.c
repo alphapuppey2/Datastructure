@@ -105,10 +105,10 @@ int delete(Adt *list , char data){
         //shifting
 
         if(c != list->count){
+            list->count--;
             for(x = c; x < list->count; x++){
                 list->elem[x] = list->elem[x + 1];
             }
-            list->count--;
         }
     }
     return (c != list->count) ? 1 : 0;
