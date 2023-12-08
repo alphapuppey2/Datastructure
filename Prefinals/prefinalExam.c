@@ -57,6 +57,8 @@ int main(void){
     insertNode(&Space, &rootIdx , list[0]);
     insertNode(&Space, &rootIdx , list[1]);
     insertNode(&Space, &rootIdx , list[2]);
+    insertNode(&Space, &rootIdx , list[3]);
+    insertNode(&Space, &rootIdx , list[4]);
 
     display(Space , rootIdx);
 
@@ -111,13 +113,14 @@ int allocSpace(virtualHeap * VH){
 }
 
 void display(virtualHeap VH , BST head){
-    int x;
+   if(head == -1){
+        return ;
+   }
+    //postOrder
 
-    printf("ROOT : %d\n" , head);
-
-    for(x = 0; x < MAX  ; x++){
-        printf("[%d] %d ::  %d | %d \n", x,VH.nodes[x].car.carYear,VH.nodes[x].left , VH.nodes[x].right);
-    }
+    display(VH ,VH.nodes[head].left);
+    printf("%s %s | %d \n" , VH.nodes[head].car.carBrand , VH.nodes[head].car.carModel , VH.nodes[head].car.carYear);    
+    display(VH ,VH.nodes[head].right);    
 }
 
 void initVirtual(virtualHeap *VH){
