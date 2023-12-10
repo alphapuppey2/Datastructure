@@ -13,7 +13,7 @@ typedef struct n
 typedef struct n2
 {
     int POT[MAX];
-    int count;
+    int count; // last index of a POT
 } arr;
 
 // Partial Ordered Tree
