@@ -250,6 +250,8 @@ void orderPizza(orderList* orders, cDict customers, char customerID[], pizzaType
     else{
         printf("Failed to create ORder\n");
     }
+
+    printf("%s\n\n", orders->orderList[ndx].pList->P.pizzaName);
     
 }
 
@@ -284,8 +286,17 @@ void displayOrderList(orderList orders)
     printf("%s","-----------------------------\n");
     int x;
     char pstatus[][20] = {"SERVED", "PREPARING" };
+    char pizzName[30];
     int st = 0;
+    
     for(x = 0; x < MAXORDERS; x++){
+        if(orders.orderList[x].pList == NULL){
+            strcpy(pizzName,"NO ORDERS");
+        }
+        else{
+            strcpy(pizzName,orders.orderList[x].pList->P.pizzaName);
+
+        }
         // if(orders.orderList[x].pList->pStat == SERVED){
         //     st = 0;
         // }
@@ -295,7 +306,7 @@ void displayOrderList(orderList orders)
         printf("OrderNumber: %d\n",orders.orderList[x].orderNumber);
         printf("Customer ID: %s\n", orders.orderList[x].cust.customerID);
         printf("Customer Name:%s\n",  orders.orderList[x].cust.custName.lName);
-        printf("Pizza Orders:%s(%s)\n", orders.orderList[x].pList->P.pizzaName ,"PREPARING");
+        printf("Pizza Orders:%s(%s)\n", pizzName ,"PREPARING");
         printf("Order Status: %s\n", "OPEN");
         printf("%s","-----------------------------\n");
     }
