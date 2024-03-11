@@ -5,7 +5,7 @@
 #define MAXORDERS 20
 #define CUSTBUCKETS 10
 
-int lastOrderNumber = 10003;
+int lastOrderNumber = 10000;
 
 typedef enum{OPEN, CLOSED} orderStatus;  //used in Closed Hashing of Orders
 typedef enum{PREPARING, SERVED} pizzaStatus;
@@ -212,7 +212,7 @@ int hashOrder(int orderID)
     //     orderID = orderID / 10;
     // }
 
-    return lastOrderNumber % MAXORDERS;
+    return orderID % MAXORDERS;
 }
 
 /*
@@ -221,38 +221,52 @@ int hashOrder(int orderID)
 
 void orderPizza(orderList* orders, cDict customers, char customerID[], pizzaType pizza)
 {
-    int ndx = hashOrder(lastOrderNumber);
     int custNdx = hashCustomer(customerID);
-    int OrderCount;
-    printf("\n%d\n",ndx);    
+    int ndx = hashOrder(lastOrderNumber + custNdx);
+    int OrderCount,orderID;
+    custList trav;
 
-    for (OrderCount = 0; OrderCount < MAXORDERS && orders->orderList[ndx].stat != OPEN;ndx = (ndx + 1) % MAXORDERS, OrderCount++)
+    for(trav = customers[custNdx],orderID = 0 ; trav != NULL && strcmp(trav->C.customerID , customerID) != 0; trav = trav->nextCust){}
+
+    for (OrderCount = 0; OrderCount < MAXORDERS && strcmp(orders->orderList[ndx].cust.customerID , customerID) != 0 && orders->orderList[ndx].orderNumber != -1 && orders->orderList[ndx].stat != CLOSED;ndx = (ndx + 1) % MAXORDERS, OrderCount++)
     {}
-    custList *trav;
-
-    for(trav = &customers[custNdx] ; *trav != NULL && strcmp((*trav)->C.customerID , customerID) != 0; trav = &(*trav)->nextCust){}
 
 
-    if (OrderCount < MAXORDERS && *trav != NULL)
+
+    if (OrderCount < MAXORDERS && trav != NULL)
     {
         pizzaList newnode = (pizzaList)malloc(sizeof(pizzaNode));
         if(newnode != NULL){
-           newnode->P = pizza;
-           newnode->pStat = PREPARING;
-           newnode->nextPizza = orders->orderList[ndx].pList;
-           orders->orderList[ndx].pList = newnode;
-           
-            orders->orderList[ndx].orderNumber = lastOrderNumber;
-            orders->orderList[ndx].stat= CLOSED;
-            orders->orderList[ndx].cust = (*trav)->C;
+            newnode->P = pizza;
+            newnode->pStat = PREPARING;
+            newnode->nextPizza = orders->orderList[ndx].pList;
+            orders->orderList[ndx].pList = newnode;
+
+            orders->orderList[ndx].orderNumber = lastOrderNumber + custNdx;
+            orders->orderList[ndx].cust = trav->C;
         }
     }
     else{
-        printf("Failed to create ORder\n");
+        printf(" \033[1;31mFAILED TO CREATE ORDER DUE TO ID NOT FOUND \033[1;0m\n");
     }
-
-    printf("%s\n\n", orders->orderList[ndx].pList->P.pizzaName);
     
+}
+
+/*
+ updateOrderStatus() = This function will receive an orderList and an orderID. The function will go through the list of pizzas in the order record of the given orderID, and check if all of the pizzas have been SERVED. If they have all been SERVED, then the function will update the orderStatus to CLOSED.
+ */
+
+
+void updateOrderStatus(orderList* orders, int orderNumber)
+{
+    int orderNDX = hashOrder(orderNumber);
+    pizzaList trav;
+
+    for(trav = orders->orderList[orderNDX].pList; trav != NULL && trav->pStat != PREPARING; trav = trav->nextPizza){}
+
+    if(trav == NULL){
+         orders->orderList[orderNDX].stat = CLOSED;
+    }
 }
 
 /*
@@ -260,17 +274,21 @@ void orderPizza(orderList* orders, cDict customers, char customerID[], pizzaType
  */
 void servePizza(orderList* orders, int orderNumber, char pizzaName[])
 {
+    // system("CLS");
+    int orderNDX = hashOrder(orderNumber);
+    pizzaList trav;
+    for(trav = orders->orderList[orderNDX].pList;trav != NULL && strcmp(trav->P.pizzaName , pizzaName) != 0; trav = trav->nextPizza){}
+    
+    if(trav != NULL){
+        trav->pStat = SERVED;
+    }
+    else{
+        printf("%s NOT FOUND in order %d\n", pizzaName , orderNumber);
+    }
+    
+    updateOrderStatus(orders , orderNumber);
     
 }
-
-/*
- updateOrderStatus() = This function will receive an orderList and an orderID. The function will go through the list of pizzas in the order record of the given orderID, and check if all of the pizzas have been SERVED. If they have all been SERVED, then the function will update the orderStatus to CLOSED.
- */
-void updateOrderStatus(orderList* orders, int orderNumber)
-{
-    
-}
-
 /*
  displayOrderList() = This function will go through each order in the orderList and display each of the orders in the ff: format:
  
@@ -286,28 +304,42 @@ void displayOrderList(orderList orders)
     printf("%s","-----------------------------\n");
     int x;
     char pstatus[][20] = {"SERVED", "PREPARING" };
-    char pizzName[30];
-    int st = 0;
+    int st = 1;
+    pizzaList trav;
     
     for(x = 0; x < MAXORDERS; x++){
-        if(orders.orderList[x].pList == NULL){
-            strcpy(pizzName,"NO ORDERS");
-        }
-        else{
-            strcpy(pizzName,orders.orderList[x].pList->P.pizzaName);
 
+        if(orders.orderList[x].pList != NULL && orders.orderList[x].pList->pStat == SERVED){
+            st = 0;
         }
-        // if(orders.orderList[x].pList->pStat == SERVED){
-        //     st = 0;
-        // }
-        // else {
-        //     st = 1;
-        // }
+        else {
+            st = 1;
+        }
         printf("OrderNumber: %d\n",orders.orderList[x].orderNumber);
         printf("Customer ID: %s\n", orders.orderList[x].cust.customerID);
-        printf("Customer Name:%s\n",  orders.orderList[x].cust.custName.lName);
-        printf("Pizza Orders:%s(%s)\n", pizzName ,"PREPARING");
-        printf("Order Status: %s\n", "OPEN");
+        printf("Customer Name:%s , %s\n",  orders.orderList[x].cust.custName.lName,orders.orderList[x].cust.custName.fName);
+        if(orders.orderList[x].pList != NULL){
+            printf("Pizza Orders: ");
+            for(trav =orders.orderList[x].pList ; trav != NULL ; trav = trav->nextPizza){
+                if(trav->pStat == SERVED){
+                    st = 0;
+                }
+                else {
+                    st = 1;
+                }
+                printf("%s(%s) ->", trav->P.pizzaName ,pstatus[st]);
+            }
+            printf("END LIST\n");
+        }
+        else{
+            printf("Pizza Orders: No Orders\n");
+        }
+        if(orders.orderList[x].stat == OPEN){
+            printf("Order Status: \033[1;32m%s\033[1;0m\n", "OPEN");
+        }
+        else{
+             printf("Order Status: \033[1;31m%s\033[1;0m\n", "CLOSED");
+        }
         printf("%s","-----------------------------\n");
     }
     
@@ -316,7 +348,7 @@ void displayOrderList(orderList orders)
 int main(void)
 {
     // createCustomerFile();
-
+    
     cDict Customers;
     orderList odr;
     toppingsBW toppings;
@@ -330,18 +362,27 @@ int main(void)
 
     int iOrder;
     char ID[10];
-    char pizzaAvail[][50] = {"Pizza Supreme" ,"Hawaiian","Beef Pepperoni"};
-    // pizzaType pizzaAvailable[3] = {{"Pizza Supreme" , 0} , {"Hawaiian",0},{"Beef Pepperoni" , 0}};
+    char pizzaAvail[][50] = {"pizza supreme" ,"hawaiian","beef pepperoni"};
+    // pizzaType pizzaAvailable[3] = {{"Pizza Supreme" , 123} , {"Hawaiian",52},{"Beef Pepperoni" , 23}};
     initCustomerDict(Customers);
     populateCustomers(Customers);
 
     //initialize the Order
     int x;
     for(x =0 ; x < MAXORDERS ; x++){
+        odr.orderList[x].orderNumber = -1;
+        strcpy(odr.orderList[x].cust.custName.lName,"------");
+        strcpy(odr.orderList[x].cust.custName.fName,"------");
+        strcpy(odr.orderList[x].cust.customerID,"------");
         odr.orderList[x].stat = OPEN;
         odr.orderList[x].pList = NULL;
     }
+
     printf("Welcome to PIZZA HUT \n\n");
+    printf("May i Take your ID :: CUST001\n");
+    // scanf("%s", ID);
+    strcpy(ID,"CUST001");
+
     printf("Menu ::\n");
     printf("------------------------\n");
     printf("[0] Pizza Supreme\n");
@@ -352,11 +393,8 @@ int main(void)
     iOrder = 1;
     // scanf("%d",&iOrder);
     // system("CLS");
-    printf("you want \033[1;32m%s\033[1;0m \n" , strupr(pizzaAvail[iOrder]));
-    printf("Your Name ID ? \"CUST001\"\n");
-    // scanf("%s", ID);
-    strcpy(ID,"CUST001");
-
+    printf("1\n" );
+    printf("you want \033[1;32m[%d]%s\033[1;0m \n" , iOrder,pizzaAvail[iOrder]);
     /*
         1 - Pepperoni
         2 - Ham
@@ -367,14 +405,12 @@ int main(void)
         7 - Bell Peppers
         8 - Mushrooms
     */
-
-    int cwValue = 145;
     // int toppingChoose[8] ={1,1,0,1,0,0,0,1};
     // while(toppingChoose != -1){
     //     system("CLS");
-        printf("Additional Toppings ? :: \n");
+        printf("Additional Toppings  :: \n");
         printf("------------\n");
-        printf("[0] Pepperoni\n[1] Ham\n[2] Onions\n[3] Pineapples\n[4] Bacon\n[5] Olives\n[6] Bell Peppers\n[7] Mushrooms\n[-1] Done\n 0,1,3,7,-1");
+        printf("[0] Pepperoni\n[1] Ham\n[2] Onions\n[3] Pineapples\n[4] Bacon\n[5] Olives\n[6] Bell Peppers\n[7] Mushrooms\n[-1] Done\n 0,1,3,7,-1\n");
     //     scanf("%d",&toppingChoose);
     //     toppings[toppingChoose] = 1;
     //     if(toppingChoose < 8 && toppingChoose >=0){
@@ -382,12 +418,27 @@ int main(void)
     //     }
     // }
 
-    TopsCW = cwValue;
+    /*TESTING VALUE*/
+    TopsCW = 145;
     
-    pizzaType Cooking =  buildPizza(pizzaAvail[iOrder],TopsCW);
-    orderPizza(&odr ,Customers,ID,Cooking);
+    /* pizzaType Cooking =  buildPizza(pizzaAvail[iOrder],TopsCW); */
+    /*  orderPizza(&odr ,Customers,"CUST001",Cooking); */
 
+    pizzaType Cooking1 =  buildPizza(pizzaAvail[0],51);
+    pizzaType Cooking2 =  buildPizza(pizzaAvail[1],23);
+    pizzaType Cooking3 =  buildPizza(pizzaAvail[2],62);
+    pizzaType Cooking4 =  buildPizza(pizzaAvail[2],165);
+    orderPizza(&odr ,Customers,"CUST001",Cooking1);
+    orderPizza(&odr ,Customers,"CUST002",Cooking2);
+    orderPizza(&odr ,Customers,"CUST001",Cooking3);
+    orderPizza(&odr ,Customers,"CUST028",Cooking4);
 
+    displayOrderList(odr);
+
+    servePizza(&odr,10009,"pizza supreme");
+    servePizza(&odr,10001,"hawaiian");
+
+    printf("-------SERVED-------\n");
     displayOrderList(odr);
 
     

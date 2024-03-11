@@ -1,1 +1,0 @@
-printf("idx[%d] : %c\n", ndx,s[ndx]);
