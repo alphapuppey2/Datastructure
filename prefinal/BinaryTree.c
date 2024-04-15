@@ -77,11 +77,8 @@ void insert(BinaryTree * R, int elem){
 }
 void Display(BinaryTree R){
     if(R != NULL){
-        printf("%d ",R->elem);
         Display(R->LC);
+        printf("%d ",R->elem);
         Display(R->RC);
     }
-}
-void delete(BinaryTree *R , int elem){
-
 }
